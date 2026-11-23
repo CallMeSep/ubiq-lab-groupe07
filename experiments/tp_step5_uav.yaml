@@ -1,0 +1,9 @@
+# TP étape 5 -- teaser UAV : pourquoi « plus haut » n'est-il pas toujours mieux ?
+name: tp_step5_uav
+scenario: scenarios/baseline.yaml
+reps: 2
+seed: 1
+variants:
+  sans_uav: {policies.uav.cls: "policies.baselines:StayAtDepot"}
+  uav:      {policies.uav.cls: "policies.baselines:HoverOver"}
+sweep: {param: policies.uav.args.h, values: [30, 60, 90, 150, 220]}

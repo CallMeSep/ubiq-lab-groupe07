@@ -1,0 +1,12 @@
+# TP étapes 3 et 4 -- mobilité subie : handover, service qui reste sur l'ancien Edge,
+# puis VOTRE politique à seuil (policies/tp_threshold.py) contre les baselines.
+name: tp_step3_mobility
+scenario: scenarios/tp_mobility.yaml
+reps: 3
+seed: 1
+variants:
+  always_local: {policies.offloading.cls: "policies.baselines:AlwaysLocal"}
+  always_edge:  {policies.offloading.cls: "policies.baselines:AlwaysEdge"}
+  always_E1:    {policies.offloading.cls: "policies.tp_threshold:FixedEdge", policies.offloading.args: {edge: E1}}
+  threshold:    {policies.offloading.cls: "policies.tp_threshold:ThresholdOffloading",
+                 policies.offloading.args: {latency_budget_ms: 120}}

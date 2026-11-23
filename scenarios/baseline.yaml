@@ -1,0 +1,115 @@
+# =====================================================================
+# Scénario commun (tous les groupes) : 3 phases
+#   [0-60 s]    nominal : 3 AP au sol, 2 Edge, 1 Cloud
+#   [60-90 s]   panne   : AP2 tombe -> trou de couverture entre ~245 et ~355 m
+#   [90-180 s]  uav     : l'UAV décolle à t=75 s et vient combler le trou
+# Les valeurs sont des ordres de grandeur, pas une vérité : à discuter.
+# =====================================================================
+name: baseline
+duration_s: 180
+tick_s: 0.1
+log_every_s: 0.5
+phases:
+  - {name: nominal, start: 0,  end: 60}
+  - {name: panne,   start: 60, end: 90}
+  - {name: uav,     start: 90, end: 180}
+
+radio:
+  handover_ms: 100            # interruption lors d'un changement d'AP
+  ground:                     # AP au sol : log-distance
+    ptx_dbm: 20
+    pl1m_db: 40
+    exponent: 3.0
+    noise_dbm: -90
+    snr_min_db: 5             # portée ~145 m
+    bandwidth_mhz: 20
+    efficiency: 0.3
+    rate_max_mbps: 30
+  a2g:                        # UAV -> sol : Al-Hourani (urbain)
+    env: urban
+    freq_ghz: 2.4
+    ptx_dbm: 0                # h* ~ 90 m, R(h*) ~ 105 m
+    noise_dbm: -90
+    snr_min_db: 5
+    bandwidth_mhz: 20
+    efficiency: 0.3
+    rate_max_mbps: 30
+
+# Sites filaires (arbre obligatoire pour le backend Mininet)
+sites: {S1: {}, S2: {}, CLOUD: {}}
+wired:
+  - {a: S1, b: S2,    delay_ms: 5,  bw_mbps: 100}
+  - {a: S1, b: CLOUD, delay_ms: 20, bw_mbps: 100}
+access_delay_ms: 8            # one-way accès radio + cœur : À JUSTIFIER avec le TP 5G
+
+aps:
+  - {id: AP1, pos: [100, 20, 6], site: S1, capacity_mbps: 25, channel: 1}
+  - {id: AP2, pos: [300, 20, 6], site: S1, capacity_mbps: 25, channel: 6}
+  - {id: AP3, pos: [500, 20, 6], site: S2, capacity_mbps: 25, channel: 11}
+
+edges:
+  E1: {site: S1, workers: 2, service_ms: 20}
+  E2: {site: S2, workers: 2, service_ms: 20}
+cloud: {site: CLOUD, workers: 16, service_ms: 12}
+
+vehicles:
+  trace: scenarios/traces/road_600m.csv
+  count: 6
+  local_service_ms: 140       # calcul embarqué : plus lent que l'Edge, proche de l'échéance
+
+tasks:                        # ex. détection d'objets sur une image compressée
+  rate_hz: 5
+  input_kb: 120
+  output_kb: 2
+  deadline_ms: 150
+  jitter_cv: 0.1
+
+perception:                   # mises à jour de perception coopérative (AoI)
+  enabled: true
+  reprs:                      # la « précision » est un paramètre FICTIF assumé
+    raw:      {size_kb: 600, pre_ms: 5,  fusion_ms: 30, accuracy: 1.00}
+    features: {size_kb: 80,  pre_ms: 25, fusion_ms: 10, accuracy: 0.93}
+    objects:  {size_kb: 4,   pre_ms: 45, fusion_ms: 2,  accuracy: 0.80}
+
+service:                      # variante B uniquement (stateful: true)
+  stateful: false
+  state_mb: 20
+  migration_bw_mbps: 100
+  migration_fixed_ms: 50
+
+load_report_s: 0.5            # période des rapports de charge des Edge
+
+uav:
+  enabled: true
+  id: UAV
+  depot: [300, -120, 0]
+  ground_station: AP1         # backhaul sans fil vers la station sol d'AP1
+  gs_height: 10
+  speed_mps: 10
+  climb_mps: 3
+  min_alt: 10
+  role: ap                    # ap | ap+edge
+  capacity_mbps: 25
+  channel: 6
+  edge: {workers: 1, service_ms: 35}
+  backhaul: {ptx_dbm: 23, gain_db: 10, rate_max_mbps: 60, bandwidth_mhz: 20, delay_ms: 1}
+  energy: {}                  # paramètres Zeng et al. 2019 par défaut
+
+zones: {}                     # zones d'intérêt (variante E), ex. {Z1: [150, 0], Z2: [450, 0]}
+
+events:
+  - {t: 60, type: ap_down, target: AP2}
+  - {t: 75, type: uav_launch}
+
+policies:
+  offloading:  {cls: "policies.baselines:AlwaysEdge"}
+  association: {cls: "policies.baselines:StrongestSNR", args: {hysteresis_db: 3}}
+  migration:   {cls: "policies.baselines:NoMigration"}
+  perception:  {cls: "policies.baselines:FixedPerception", args: {repr: objects, rate_hz: 2}}
+  uav:         {cls: "policies.baselines:HoverOver", args: {x: 300, y: 20, h: 60}}
+
+mininet:                      # paramètres propres au backend Mininet-WiFi
+  ip_prefix: "10.0.0."
+  wifi_mode: g
+  update_positions: false     # true = appelle setPosition() (visualisation)
+  shaping_min_change: 0.15    # ne reconfigure tc que si le débit varie de >15 %

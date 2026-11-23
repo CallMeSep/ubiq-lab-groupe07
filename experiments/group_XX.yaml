@@ -1,0 +1,15 @@
+# Plan d'expériences du groupe XX -- copiez en experiments/group_<numéro>.yaml
+# Obligatoire : la baseline commune + votre proposition, >= 5 répétitions,
+# au moins UN paramètre balayé (sweep).
+name: group_XX
+scenario: scenarios/baseline.yaml
+backend: sim            # développez en sim, figures finales en mininet
+reps: 5
+seed: 1
+overrides: {}           # ex. {service.stateful: true} pour la variante B
+variants:
+  baseline: {}
+  proposition:
+    policies.offloading.cls: "policies.group_XX:MyOffloading"
+    policies.offloading.args: {}
+sweep: {param: tasks.rate_hz, values: [3, 5, 7]}

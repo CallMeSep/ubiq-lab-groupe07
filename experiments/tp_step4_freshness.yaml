@@ -1,0 +1,19 @@
+# TP étape 4 (suite) -- « Une bonne décision prise avec une information périmée peut devenir mauvaise. »
+# À t = 20,5 s, l'Edge E2 devient 6 fois plus lent (surcharge). Les véhicules ne l'apprennent que
+# par les rapports de charge, envoyés toutes les load_report_s secondes : on fait varier cette période.
+#   threshold_rap : votre politique, limitée aux rapports de charge (use_observed: false)
+#   threshold     : votre politique complète (identique à la précédente si vous n'avez pas traité le TODO 3)
+name: tp_step4_freshness
+scenario: scenarios/tp_mobility.yaml
+reps: 10
+seed: 1
+overrides:
+  events:
+    - {t: 20.5, type: edge_overload, target: E2, factor: 6}
+variants:
+  always_edge:        {policies.offloading.cls: "policies.baselines:AlwaysEdge"}
+  threshold_rap:      {policies.offloading.cls: "policies.tp_threshold:ThresholdOffloading",
+                       policies.offloading.args: {latency_budget_ms: 120, use_observed: false}}
+  threshold:          {policies.offloading.cls: "policies.tp_threshold:ThresholdOffloading",
+                       policies.offloading.args: {latency_budget_ms: 120}}
+sweep: {param: load_report_s, values: [0.1, 0.5, 2, 5, 10]}

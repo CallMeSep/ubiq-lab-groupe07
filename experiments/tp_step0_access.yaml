@@ -1,0 +1,14 @@
+# TP étape 0 -- « Votre access_delay_ms (TP1) change-t-il la décision Edge / local ? »
+# AJOUTEZ votre valeur mesurée au TP1 (médiane des RTT / 2, en ms) dans la liste values.
+# La variante threshold est VOTRE politique (policies/tp_threshold.py) : tant que vous ne l'avez
+# pas complétée (étape 4), elle se comporte exactement comme always_edge.
+name: tp_step0_access
+scenario: scenarios/tp_mobility.yaml
+reps: 3
+seed: 1
+variants:
+  always_local: {policies.offloading.cls: "policies.baselines:AlwaysLocal"}
+  always_edge:  {policies.offloading.cls: "policies.baselines:AlwaysEdge"}
+  threshold:    {policies.offloading.cls: "policies.tp_threshold:ThresholdOffloading",
+                 policies.offloading.args: {latency_budget_ms: 120}}
+sweep: {param: access_delay_ms, values: [4, 8, 15, 25, 40]}

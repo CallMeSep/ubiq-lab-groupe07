@@ -1,0 +1,11 @@
+# TP étape 1 -- « À partir de quelle charge l'Edge devient-il plus lent que le local ? »
+# PRÉDISEZ la réponse AVANT de lancer.
+name: tp_step1_load
+scenario: scenarios/tp_static.yaml
+reps: 3
+seed: 1
+variants:
+  always_local: {policies.offloading.cls: "policies.baselines:AlwaysLocal"}
+  always_edge:  {policies.offloading.cls: "policies.baselines:AlwaysEdge"}
+  edge_4workers: {policies.offloading.cls: "policies.baselines:AlwaysEdge", edges.E1.workers: 4}   # test : l'Edge est-il le goulot ?
+sweep: {param: vehicles.count, values: [1, 2, 4, 6, 8]}

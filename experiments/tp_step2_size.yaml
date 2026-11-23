@@ -1,0 +1,12 @@
+# TP étape 2 -- taille de tâche x distance à l'AP : esquisser la carte des régimes.
+name: tp_step2_size
+scenario: scenarios/tp_static.yaml
+reps: 3
+seed: 1
+overrides: {vehicles.count: 2}
+variants:
+  local:      {policies.offloading.cls: "policies.baselines:AlwaysLocal"}
+  edge_pres:  {policies.offloading.cls: "policies.baselines:AlwaysEdge", vehicles.id_prefix: V}
+  edge_loin:  {policies.offloading.cls: "policies.baselines:AlwaysEdge", vehicles.id_prefix: F}
+  edge_mixte: {policies.offloading.cls: "policies.baselines:AlwaysEdge", vehicles.ids: [V1, F1]}   # V1 proche + F1 loin, meme AP
+sweep: {param: tasks.input_kb, values: [30, 60, 120, 240, 480]}

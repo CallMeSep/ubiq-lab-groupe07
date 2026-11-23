@@ -1,0 +1,12 @@
+# Expérience de référence commune : les 3 baselines d'offloading sur le scénario en 3 phases.
+name: baseline
+scenario: scenarios/baseline.yaml
+backend: sim          # sim pour développer ; mininet pour les figures finales
+reps: 5
+seed: 1
+variants:
+  always_local: {policies.offloading.cls: "policies.baselines:AlwaysLocal"}
+  always_edge:  {policies.offloading.cls: "policies.baselines:AlwaysEdge"}
+  always_cloud: {policies.offloading.cls: "policies.baselines:AlwaysCloud"}
+  edge_no_uav:  {policies.offloading.cls: "policies.baselines:AlwaysEdge",
+                 policies.uav.cls: "policies.baselines:StayAtDepot"}

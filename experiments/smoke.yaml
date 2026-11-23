@@ -1,0 +1,11 @@
+# Test de fumée : 20 s, 1 répétition. `make smoke` / `sudo make smoke-mn`
+name: smoke
+scenario: scenarios/baseline.yaml
+reps: 1
+seed: 1
+overrides:
+  duration_s: 20
+  phases: [{name: nominal, start: 0, end: 10}, {name: panne, start: 10, end: 20}]
+  events: [{t: 8, type: ap_down, target: AP2}, {t: 9, type: uav_launch}]
+variants:
+  always_edge: {}

@@ -1,0 +1,5 @@
+# Dépendances Python (la VM les fournit déjà)
+pyyaml>=5.4
+matplotlib>=3.5
+# optionnel : jupyter, pytest
+# Backend mininet : Mininet-WiFi (installé dans la VM, voir docs/ENSEIGNANT.md)

@@ -1,0 +1,28 @@
+# Variante C -- Perception coopérative. Groupe NN.
+# Scénario commun inchangé (3 phases). On compare :
+#   baseline        FixedPerception : objects, 2 Hz (référence commune)
+#   age_seul        piège 1 : optimiser l'âge seul      -> objects, 6 Hz
+#   precision_seule piège 2 : optimiser la précision seule -> features, 4 Hz
+#   adaptive        notre politique : max précision - lambda x AoI, sous budget de bande
+#
+# Balayage : charge de calcul (tasks.rate_hz). Plus il y a de tâches, moins il reste de bande
+# pour la perception : la politique doit se replier, les variantes fixes non.
+#
+# Démonstration (une ligne à changer, puis --reps 3) :
+#   - vehicles.count: 4        - lam: 0.3 ou 3 dans les args d'adaptive
+#   - aps.0.capacity_mbps n'est pas pointable : préférer tasks.input_kb: 200
+name: group_07
+scenario: scenarios/baseline.yaml
+backend: sim
+reps: 5
+seed: 1
+overrides: {}
+variants:
+  baseline: {}
+  age_seul:
+    policies.perception: {cls: "policies.baselines:FixedPerception", args: {repr: objects, rate_hz: 6}}
+  precision_seule:
+    policies.perception: {cls: "policies.baselines:FixedPerception", args: {repr: features, rate_hz: 4}}
+  adaptive:
+    policies.perception: {cls: "policies.group_07:AdaptivePerception", args: {lam: 1.0, margin: 0.7}}
+sweep: {param: tasks.rate_hz, values: [3, 5, 7]}
