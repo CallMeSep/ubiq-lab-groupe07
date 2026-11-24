@@ -1,0 +1,32 @@
+{
+  "experiment": "tp_step1_load",
+  "variant": "always_local",
+  "sweep_param": "vehicles.count",
+  "sweep_value": 6,
+  "rep": 1,
+  "seed": 1001,
+  "policies": {
+    "offloading": {
+      "cls": "policies.baselines:AlwaysLocal"
+    },
+    "association": {
+      "cls": "policies.baselines:StrongestSNR"
+    }
+  },
+  "backend": "sim",
+  "phases": [
+    {
+      "name": "statique",
+      "start": 0,
+      "end": 40
+    }
+  ],
+  "vehicles": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6"
+  ]
+}

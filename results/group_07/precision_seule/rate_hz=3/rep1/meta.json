@@ -1,0 +1,63 @@
+{
+  "experiment": "group_07",
+  "variant": "precision_seule",
+  "sweep_param": "tasks.rate_hz",
+  "sweep_value": 3,
+  "rep": 1,
+  "seed": 1001,
+  "policies": {
+    "offloading": {
+      "cls": "policies.baselines:AlwaysEdge"
+    },
+    "association": {
+      "cls": "policies.baselines:StrongestSNR",
+      "args": {
+        "hysteresis_db": 3
+      }
+    },
+    "migration": {
+      "cls": "policies.baselines:NoMigration"
+    },
+    "perception": {
+      "cls": "policies.baselines:FixedPerception",
+      "args": {
+        "repr": "features",
+        "rate_hz": 4
+      }
+    },
+    "uav": {
+      "cls": "policies.baselines:HoverOver",
+      "args": {
+        "x": 300,
+        "y": 20,
+        "h": 60
+      }
+    }
+  },
+  "backend": "sim",
+  "phases": [
+    {
+      "name": "nominal",
+      "start": 0,
+      "end": 60
+    },
+    {
+      "name": "panne",
+      "start": 60,
+      "end": 90
+    },
+    {
+      "name": "uav",
+      "start": 90,
+      "end": 180
+    }
+  ],
+  "vehicles": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6"
+  ]
+}

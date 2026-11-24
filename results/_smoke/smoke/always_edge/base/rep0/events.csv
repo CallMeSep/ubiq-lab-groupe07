@@ -1,0 +1,15 @@
+t,type,target,detail
+0.0,attach,V1,None->AP2
+0.0,attach,V2,None->AP2
+0.0,attach,V3,None->AP2
+0.0,attach,V4,None->AP1
+0.0,attach,V5,None->AP1
+0.0,attach,V6,None->AP1
+8.0,ap_down,AP2,{}
+8.0,detach,V1,AP2->None
+8.0,detach,V2,AP2->None
+8.0,handover,V3,AP2->AP3
+9.0,uav_launch,,{}
+12.3,uav_ap_up,UAV,"pos=(300.0, -86.0, 10.2)"
+16.2,attach,V1,None->UAV
+16.8,attach,V2,None->UAV

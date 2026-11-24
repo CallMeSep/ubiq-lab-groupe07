@@ -1,0 +1,33 @@
+{
+  "experiment": "tp_step0_access",
+  "variant": "threshold",
+  "sweep_param": "access_delay_ms",
+  "sweep_value": 40,
+  "rep": 2,
+  "seed": 1002,
+  "policies": {
+    "offloading": {
+      "cls": "policies.tp_threshold:ThresholdOffloading",
+      "args": {
+        "latency_budget_ms": 120
+      }
+    },
+    "association": {
+      "cls": "policies.baselines:StrongestSNR",
+      "args": {
+        "hysteresis_db": 3
+      }
+    }
+  },
+  "backend": "sim",
+  "phases": [
+    {
+      "name": "route",
+      "start": 0,
+      "end": 60
+    }
+  ],
+  "vehicles": [
+    "V1"
+  ]
+}

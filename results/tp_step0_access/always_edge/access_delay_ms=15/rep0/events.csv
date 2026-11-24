@@ -1,0 +1,5 @@
+t,type,target,detail
+0.0,attach,V1,None->AP1
+15.0,handover,V1,AP1->AP2
+37.8,detach,V1,AP2->None
+47.0,attach,V1,None->AP2

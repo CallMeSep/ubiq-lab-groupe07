@@ -1,0 +1,33 @@
+{
+  "experiment": "tp_step3_mobility",
+  "variant": "always_E1",
+  "sweep_param": null,
+  "sweep_value": null,
+  "rep": 8,
+  "seed": 1008,
+  "policies": {
+    "offloading": {
+      "cls": "policies.tp_threshold:FixedEdge",
+      "args": {
+        "edge": "E1"
+      }
+    },
+    "association": {
+      "cls": "policies.baselines:StrongestSNR",
+      "args": {
+        "hysteresis_db": 3
+      }
+    }
+  },
+  "backend": "sim",
+  "phases": [
+    {
+      "name": "route",
+      "start": 0,
+      "end": 60
+    }
+  ],
+  "vehicles": [
+    "V1"
+  ]
+}
